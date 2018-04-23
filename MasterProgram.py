@@ -1,4 +1,4 @@
-import tensorflow as tf
+
 import numpy as np
 import opencv as cv2
 import pyfirmata
@@ -10,6 +10,13 @@ import numpy as np
 import RPi.GPIO as GPIO
 import opencv_workspace/LaneTrackingNeuralNet as net
 from threading import Thread
+import socket
+
+#setup socket
+host = '159.89.53.176'
+port = 5000
+mySocket = socket.socket()
+mySocket.connect((host,port))
 
 #Camera Setup
 camera = PiCamera()
@@ -93,7 +100,10 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	rawCapture.truncate(0)
 	
 def lane_tracking(img):
-	global control = net.neural_network_output(img)
+	message = np.reshape(img, (1, 230400))
+	global mySocket.send(message.encode())
+	data = mySocket.recv(10).decode()
+
 
 def object_recognition(img):
 	stop = stop_cascade.detectMultiScale(gray, 10, 10)

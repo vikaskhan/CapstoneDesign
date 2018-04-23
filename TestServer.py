@@ -1,5 +1,6 @@
 import socket
- 
+import opencv_workspace/LaneTrackingNeuralNet as net
+
 def Main():
     host = "159.89.53.176"
     port = 5000
@@ -11,14 +12,12 @@ def Main():
     conn, addr = mySocket.accept()
     print ("Connection from: " + str(addr))
     while True:
-            data = conn.recv(1024).decode()
+            data = conn.recv(230400).decode()
+			data = np.reshape(data, (1, 230400))
             if not data:
                     break
-            print ("from connected  user: " + str(data))
-             
-            data = str(data).upper()
-            print ("sending: " + str(data))
-            conn.send(data.encode())
+			message = net.neural_network_output(data)
+            conn.send(message.encode())
              
     conn.close()
      
