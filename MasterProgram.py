@@ -1,6 +1,4 @@
-
 import numpy as np
-import opencv as cv2
 import pyfirmata
 import time
 from picamera.array import PiRGBArray
@@ -8,13 +6,12 @@ from picamera import PiCamera
 import cv2
 import numpy as np
 import RPi.GPIO as GPIO
-import opencv_workspace/LaneTrackingNeuralNet as net
 from threading import Thread
 import socket
 
 #setup socket
 host = '159.89.53.176'
-port = 5000
+port = 500
 mySocket = socket.socket()
 mySocket.connect((host,port))
 
@@ -63,8 +60,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	
 	#Create Threads
-	thread1 = Thread(target = lane_tracking, args = image)
-	thread2 = Thread(target = object_recognition, args = gray)
+	thread1 = Thread(target = lane_tracking, args = (image,))
+	thread2 = Thread(target = object_recognition, args = (gray,))
 	thread3 = Thread(target = collision_avoidance)
 	
 	#Start Threads
@@ -94,21 +91,23 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		left()
 		print('left')
 	else:
-		stop():
+		stop()
 		print('stop')
 	#Clear video stream
 	rawCapture.truncate(0)
 	
 def lane_tracking(img):
 	message = np.reshape(img, (1, 230400))
-	global mySocket.send(message.encode())
+	global mySocket 
+	mySocket.send(message.encode())
 	data = mySocket.recv(10).decode()
 
 
 def object_recognition(img):
-	stop = stop_cascade.detectMultiScale(gray, 10, 10)
-	for (x,y,w,h) in stop:
-		global stop = True
+	stop_sign = stop_cascade.detectMultiScale(gray, 10, 10)
+	for (x,y,w,h) in stop_sign:
+		global stop 
+		stop = True
 		print('Stop Sign Detected')
 		
 def collision_avoidance():
@@ -121,12 +120,14 @@ def collision_avoidance():
 	pulse_duration = pulse_end - pulse_start
 
 	distance = pulse_duration * 17150
-    distance = round(distance, 2)
+	distance = round(distance, 2)
 	if distance < 15:
-		global collision = True
+		global collision 
+		collision = True
 		print("Object Detected")
 	else: 
-		global collision = False
+		global collision 
+		collision = False
 		
 def stop():
 	global pin6
