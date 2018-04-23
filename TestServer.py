@@ -1,24 +1,26 @@
 import socket
-
+ 
 def Main():
-    host = '127.0.0.1'
+    host = "159.89.53.176"
     port = 5000
-
-    s = socket.socket()
-    s.bind((host,port))
-
-    s.listen(1)
-    c, addr = s.accept()
-    print "Connection from: " + str(addr)
+     
+    mySocket = socket.socket()
+    mySocket.bind((host,port))
+     
+    mySocket.listen(1)
+    conn, addr = mySocket.accept()
+    print ("Connection from: " + str(addr))
     while True:
-        data = c.recv(1024)
-        if not data:
-            break
-        print "from connected user: " + str(data)
-        data = str(data).upper()
-        print "sending: " + str(data)
-        c.send(data)
-    c.close()
-
+            data = conn.recv(1024).decode()
+            if not data:
+                    break
+            print ("from connected  user: " + str(data))
+             
+            data = str(data).upper()
+            print ("sending: " + str(data))
+            conn.send(data.encode())
+             
+    conn.close()
+     
 if __name__ == '__main__':
     Main()
