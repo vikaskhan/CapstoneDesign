@@ -52,50 +52,6 @@ collision = False
 control = 3
 loop = 0
 
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-
-	print('Iteration: ' + str(loop))
-
-	image = frame.array
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-	
-	#Create Threads
-	thread1 = Thread(target = lane_tracking, args = (image,))
-	thread2 = Thread(target = object_recognition, args = (gray,))
-	thread3 = Thread(target = collision_avoidance)
-	
-	#Start Threads
-	thread1.start()
-	thread2.start()
-	thread3.start()
-	
-	#Wait for Threads to exit
-	thread1.join()
-	thread2.join()
-	thread3.join()
-	
-	while collision == True:
-		stop()
-		collision_avoidance()
-	if stop == True:
-		stop()
-		time.sleep(3)
-		straight()
-	if control == 0:
-		straight()
-		print('straight')
-	elif control == 1:
-		right()
-		print('right')
-	elif control == 2:
-		left()
-		print('left')
-	else:
-		stop()
-		print('stop')
-	#Clear video stream
-	rawCapture.truncate(0)
-	
 def lane_tracking(img):
 	message = np.reshape(img, (1, 230400))
 	global mySocket 
@@ -152,6 +108,52 @@ def straight():
 	global pin11
 	pin6.write((float(0.6))) #right
 	pin11.write(float(0.6)) #left
+
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+
+	print('Iteration: ' + str(loop))
+
+	image = frame.array
+	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+	
+	#Create Threads
+	thread1 = Thread(target = lane_tracking, args = (image,))
+	thread2 = Thread(target = object_recognition, args = (gray,))
+	thread3 = Thread(target = collision_avoidance)
+	
+	#Start Threads
+	thread1.start()
+	thread2.start()
+	thread3.start()
+	
+	#Wait for Threads to exit
+	thread1.join()
+	thread2.join()
+	thread3.join()
+	
+	while collision == True:
+		stop()
+		collision_avoidance()
+	if stop == True:
+		stop()
+		time.sleep(3)
+		straight()
+	if control == 0:
+		straight()
+		print('straight')
+	elif control == 1:
+		right()
+		print('right')
+	elif control == 2:
+		left()
+		print('left')
+	else:
+		stop()
+		print('stop')
+	#Clear video stream
+	rawCapture.truncate(0)
+	
+
 
 	
 	
