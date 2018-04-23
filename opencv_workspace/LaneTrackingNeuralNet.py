@@ -17,7 +17,7 @@ def get_data(filename):
     if filename[0] == 'o':
          array = np.reshape(array, (1, 4))
     return array
-
+	
 hidden_1_layer = {'weights': tf.Variable(tf.random_normal([230400, n_nodes_hl1])),
                   'biases': tf.Variable(tf.random_normal([n_nodes_hl1]))}
 
@@ -65,7 +65,8 @@ def train_neural_network(x):
 
 def neural_network_output(filename):
     
-    data = get_data(filename)
+    #data = get_data(filename)
+	data = np.reshape(filename, (1, 230400))
     prediction = neural_network_model(x)
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
@@ -92,4 +93,4 @@ def test_neural_network():
     print('Hello')
     print(accuracy)
 
-test_neural_network()
+#test_neural_network()

@@ -31,5 +31,7 @@ while 1:
         print("Object Detected")
     else:
         print("Distance:",distance,"cm")
-
+	
+	
+	
 GPIO.cleanup()
