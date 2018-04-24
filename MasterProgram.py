@@ -53,10 +53,15 @@ control = 3
 loop = 0
 
 def lane_tracking(img):
-	message = np.reshape(img, (1, 230400))
-	global mySocket 
-	mySocket.send(message.encode())
+	global mySocket
+	np.save('message', img)
+	file = open('message', 'rb')
+	message = file.read(1024)
+	while message:
+		mySocket.send(message)
+		message = file.read(1024)
 	data = mySocket.recv(10).decode()
+	print(data)
 
 
 def object_recognition(img):
