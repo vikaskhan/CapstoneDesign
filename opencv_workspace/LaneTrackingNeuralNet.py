@@ -66,7 +66,7 @@ def train_neural_network(x):
 def neural_network_output(filename):
     
     #data = get_data(filename)
-	data = np.reshape(filename, (1, 230400))
+    data = np.reshape(filename, (1, 230400))
     prediction = neural_network_model(x)
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
